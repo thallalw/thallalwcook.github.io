@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cindy's Kitchen - Order Now!</title>
+    <style>
+        :root {
+            --pink-light: #fce4ec;
+            --pink-medium: #f8bbd0;
+            --pink-dark: #f06292;
+            --white: #ffffff;
+            --black: #333333; /* Warna gelap untuk teks tombol */
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--pink-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 30px; /* Kasih padding bawah */
+        }
+
+        .hello-kitty-pattern-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: url('bgcindy.jpg');
+            background-size: auto;
+            background-repeat: repeat;
+        }
+
+        .curtain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .curtain {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background-color: var(--red-heart);
+            box-shadow: inset -5px 0 10px rgba(0,0,0,0.2);
+            animation: curtainWave 10s ease-in-out infinite alternate;
+        }
+        .curtain.left { left: 0; }
+        .curtain.right {
+            right: 0;
+            box-shadow: inset 5px 0 10px rgba(0,0,0,0.2);
+        }
+
+        @keyframes curtainWave {
+            0% { transform: perspective(1000px) rotateY(0deg); }
+            50% { transform: perspective(1000px) rotateY(1deg); }
+            100% { transform: perspective(1000px) rotateY(0deg); }
+        }
+
+        .content-area {
+            position: relative;
+            z-index: 20;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px 40px;
+            margin-top: 30px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 900px;
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "garlic fusili"
+                "texture topping"
+                "buyername buyername"
+                "total total"
+                "addtocart addtocart";
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 30px;
+            border: 5px solid var(--pink-dark);
+            box-sizing: border-box;
+        }
+        @media (max-width: 768px) {
+            .content-area {
+                grid-template-areas:
+                    "header" "garlic" "fusili" "texture" "topping" "buyername" "total" "addtocart";
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .header-title {
+            grid-area: header;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 3em;
+            color: var(--red-heart);
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px var(--pink-light);
+        }
+
+        .menu-card {
+            background-color: var(--pink-light);
+            border-radius: 20px;
+            padding: 15px;
+            border: 3px dashed var(--pink-dark);
+        }
+
+        .menu-card h3 {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            color: var(--red-heart);
+            font-size: 1.7em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            background-color: var(--white);
+            padding: 8px 12px;
+            border-radius: 15px;
+            border: 1px solid var(--pink-medium);
+        }
+        .item-row.centered { justify-content: center; }
+
+        .item-row img { height: 60px; width: auto; object-fit: contain; }
+        .garlic-bread-section img { width: 100px; height: 100px; object-fit: contain; }
+        
+        /* REVISI: Penyesuaian gambar dan tampilan fusili */
+        .fusili-section img {
+            width: 80px; /* Lebar gambar */
+            height: 80px; /* Tinggi gambar */
+            object-fit: contain; /* Agar gambar tidak terpotong */
+            border-radius: 10px;
+        }
+        .fusili-item-container { /* Kontainer untuk setiap item fusili (500ml atau 300ml) */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Tengahkan konten secara horizontal */
+            width: 45%; /* Sesuaikan agar pas */
+            text-align: center;
+            background-color: var(--white); /* Background putih */
+            padding: 10px; /* Padding di dalam kotak */
+            border-radius: 15px; /* Border radius */
+            border: 1px solid var(--pink-medium); /* Border */
+            box-sizing: border-box; /* Pastikan padding tidak menambah lebar */
+        }
+        .fusili-item-container h4 {
+            margin: 5px 0; /* Margin atas bawah */
+            color: var(--pink-dark);
+            font-size: 1.1em;
+        }
+        .fusili-item-container p {
+            margin: 0;
+            font-size: 1em;
+            color: var(--black);
+            font-weight: bold; /* Tebalkan harga */
+        }
+        /* Akhir Revisi Fusili */
+
+
+        input[type="number"] {
+            width: 40px;
+            padding: 5px;
+            border: 1px solid var(--pink-medium);
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1em;
+            margin-top: 5px; /* Tambahkan margin atas untuk input angka */
+        }
+
+        .options-group { text-align: left; margin-top: 10px; }
+        .options-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            color: var(--pink-dark);
+            font-size: 1.1em;
+        }
+        .options-group input { margin-right: 8px; }
+
+        .garlic-bread-section { grid-area: garlic; text-align: center; }
+        .fusili-section { grid-area: fusili; }
+        .texture-section { grid-area: texture; }
+        .topping-section { grid-area: topping; }
+        
+        /* --- STOK DISPLAY --- */
+        .stock-display {
+            display: block;
+            font-size: 0.9em;
+            font-style: italic;
+            color: var(--pink-dark);
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        /* --- NAMA PEMBELI --- */
+        .buyer-name-section {
+            grid-area: buyername;
+            text-align: center;
+            margin-top: 15px;
+            background-color: var(--pink-light);
+            border-radius: 20px;
+            padding: 15px;
+            border: 3px dashed var(--pink-dark);
+        }
+        .buyer-name-section label {
+            font-size: 1.3em;
+            color: var(--pink-dark);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+        #buyer-name {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.2em;
+            padding: 8px;
+            border: 2px solid var(--pink-medium);
+            border-radius: 8px;
+            width: 70%;
+        }
+
+        /* --- TOTAL HARGA --- */
+        .total-price-section {
+            grid-area: total;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #total-price-display {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 2em;
+            color: var(--black);
+            background-color: var(--white);
+            border: 2px dashed var(--pink-dark);
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .add-to-cart-section {
+            grid-area: addtocart;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .add-to-cart-btn {
+            background-color: var(--red-heart);
+            color: var(--black); /* REVISI: Teks warna gelap */
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--pink-dark);
+            color: var(--white);
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-family: 'Times New Roman', Times, serif;
+            z-index: 1000;
+            display: none;
+            animation: fadeInOut 2s forwards;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; } 15% { opacity: 1; }
+            85% { opacity: 1; } 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hello-kitty-pattern-bg"></div>
+
+    <div class="curtain-container">
+        <div class="curtain left"></div>
+        <div class="curtain right"></div>
+    </div>
+
+    <div class="content-area">
+        <h1 class="header-title">PRICE LIST MENU 猪</h1>
+
+        <div class="menu-card garlic-bread-section">
+            <h3>🍞込 Garlic bread & Chili sauce</h3>
+            <div class="item-row centered">
+                <img src="rotisambal.jpg" alt="Garlic Bread & Chili Sauce">
+            </div>
+            <p style="font-size: 1.1em; font-weight: bold; margin-top: 10px;">Rp 10.000</p>
+            <input type="number" value="0" min="0" data-item-id="garlic_bread" data-price="10000" oninput="updateTotal()">
+            <span id="stock-garlic_bread" class="stock-display">Stok: 0</span>
+        </div>
+
+        <div class="menu-card fusili-section">
+            <h3>佐 Schotelicius Fusili</h3>
+            <div style="display: flex; gap: 10px; width: 100%; justify-content: space-around;">
+                <div class="fusili-item-container">
+                    <img src="500.jpg" alt="Schotelicius Fusili 500ml">
+                    <h4>500 ml</h4>
+                    <p>Rp 25.000</p>
+                    <input type="number" value="0" min="0" data-item-id="fusili_500" data-price="25000" oninput="updateTotal()">
+                    <span id="stock-fusili_500" class="stock-display">Stok: 0</span>
+                </div>
+                <div class="fusili-item-container">
+                    <img src="300ml.jpg" alt="Schotelicius Fusili 300ml">
+                    <h4>300 ml</h4>
+                    <p>Rp 15.000</p>
+                    <input type="number" value="0" min="0" data-item-id="fusili_300" data-price="15000" oninput="updateTotal()">
+                    <span id="stock-fusili_300" class="stock-display">Stok: 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-card texture-section">
+            <h3>Preferred Texture</h3>
+            <div class="options-group">
+                <label>
+                    <input type="radio" name="texture" value="creamy_cheese" checked>
+                    Creamy cheese schotelicius
+                </label>
+                <label>
+                    <input type="radio" name="texture" value="regular_cheese">
+                    Reguler cheese schotelicius
+                </label>
+            </div>
+        </div>
+
+        <div class="menu-card topping-section">
+            <h3>Extra Topping</h3>
+            <div class="options-group">
+                <label>
+                    <input type="checkbox" data-topping-id="cheese" data-price="3000" onchange="updateTotal()">
+                    Cheese: Rp 3.000
+                </label>
+                <label>
+                    <input type="checkbox" data-topping-id="sausage" data-price="5000" onchange="updateTotal()">
+                    Sausage: Rp 5.000
+                </label>
+                <label>
+                    <input type="checkbox" data-topping-id="chili_sauce" data-price="2000" onchange="updateTotal()">
+                    Chili Sauce: Rp 2.000
+                </label>
+            </div>
+        </div>
+
+        <div class="buyer-name-section">
+            <label for="buyer-name">Nama Anda:</label>
+            <input type="text" id="buyer-name" placeholder="Tulis nama di sini...">
+        </div>
+
+        <div class="total-price-section">
+            <h2 id="total-price-display">Total: Rp 0</h2>
+        </div>
+
+        <div class="add-to-cart-section">
+            <button class="add-to-cart-btn" onclick="addToCart()">Pesan Sekarang 🍞猪</button>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">Order Added!</div>
+
+    <script>
+        // Ambil stok dari localStorage atau buat default jika belum ada
+        function getStock() {
+            return JSON.parse(localStorage.getItem('cindy_menu_stock')) || {
+                "garlic_bread": 10,
+                "fusili_500": 10,
+                "fusili_300": 10
+            };
+        }
+
+        // Tampilkan stok di halaman
+        function loadStockDisplay() {
+            const menuStock = getStock();
+            document.getElementById('stock-garlic_bread').innerText = `Stok: ${menuStock.garlic_bread || 0}`;
+            document.getElementById('stock-fusili_500').innerText = `Stok: ${menuStock.fusili_500 || 0}`;
+            document.getElementById('stock-fusili_300').innerText = `Stok: ${menuStock.fusili_300 || 0}`;
+        }
+
+        function updateTotal() {
+            let total = 0;
+            
+            document.querySelectorAll('input[type="number"][data-item-id]').forEach(input => {
+                const quantity = parseInt(input.value) || 0;
+                const price = parseInt(input.dataset.price) || 0;
+                total += quantity * price;
+            });
+            
+            document.querySelectorAll('input[type="checkbox"][data-topping-id]:checked').forEach(input => {
+                total += parseInt(input.dataset.price) || 0;
+            });
+            
+            document.getElementById('total-price-display').innerText = `Total: Rp ${total.toLocaleString('id-ID')}`;
+        }
+
+        function addToCart() {
+            // REVISI: Validasi nama pembeli
+            const buyerName = document.getElementById('buyer-name').value;
+            if (!buyerName.trim()) {
+                alert("Harap masukkan nama Anda!");
+                document.getElementById('buyer-name').focus();
+                return;
+            }
+
+            let order = {
+                buyerName: buyerName, // Simpan nama pembeli
+                items: [],
+                toppings: [],
+                texture: document.querySelector('input[name="texture"]:checked').value,
+                timestamp: new Date().toLocaleString()
+            };
+            let totalOrderPrice = 0;
+            let menuStock = getStock();
+            let stockSufficient = true;
+            let stockAlerts = [];
+
+            // REVISI: Cek stok dulu
+            document.querySelectorAll('input[type="number"][data-item-id]').forEach(input => {
+                const quantity = parseInt(input.value);
+                if (quantity > 0) {
+                    const itemId = input.dataset.itemId;
+                    const price = parseInt(input.dataset.price);
+                    const currentStock = menuStock[itemId] || 0;
+
+                    if (quantity > currentStock) {
+                        stockSufficient = false;
+                        stockAlerts.push(`Stok ${itemId.replace(/_/g, ' ')} tidak cukup! Sisa ${currentStock}.`);
+                    } else {
+                        order.items.push({
+                            id: itemId,
+                            price: price,
+                            quantity: quantity
+                        });
+                        totalOrderPrice += quantity * price;
+                    }
+                }
+            });
+
+            // Jika stok tidak cukup, tampilkan alert dan hentikan proses
+            if (!stockSufficient) {
+                alert(stockAlerts.join('\n'));
+                return;
+            }
+
+            document.querySelectorAll('input[type="checkbox"][data-topping-id]:checked').forEach(input => {
+                const price = parseInt(input.dataset.price);
+                order.toppings.push({
+                    id: input.dataset.toppingId,
+                    price: price
+                });
+                totalOrderPrice += price;
+            });
+
+            if (order.items.length === 0 && order.toppings.length === 0) {
+                alert("Please select at least one item or topping!");
+                return;
+            }
+            
+            // Simpan total harga di dalam order
+            order.totalPrice = totalOrderPrice;
+
+            // REVISI: Kurangi stok setelah pesanan berhasil
+            order.items.forEach(item => {
+                menuStock[item.id] -= item.quantity;
+            });
+            localStorage.setItem('cindy_menu_stock', JSON.stringify(menuStock));
+
+            // Simpan pesanan ke localStorage
+            let currentOrders = JSON.parse(localStorage.getItem('cindy_orders')) || [];
+            currentOrders.push(order);
+            localStorage.setItem('cindy_orders', JSON.stringify(currentOrders));
+
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            setTimeout(() => { successMessage.style.display = 'none'; }, 2000);
+
+            // Reset form
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
+            document.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = false);
+            document.querySelector('input[name="texture"][value="creamy_cheese"]').checked = true;
+            document.getElementById('buyer-name').value = ''; // Kosongkan nama
+            
+            updateTotal(); // Update total kembali ke Rp 0
+            loadStockDisplay(); // Update tampilan stok
+        }
+        
+        // Panggil updateTotal() dan loadStockDisplay() saat halaman pertama kali dimuat
+        window.onload = () => {
+            updateTotal();
+            loadStockDisplay();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Kitty's Kitchen - Manage Orders</title>
+    <style>
+        :root {
+            --pink-light: #fce4ec;
+            --pink-medium: #f8bbd0;
+            --pink-dark: #f06292;
+            --red-heart: #e91e63;
+            --white: #ffffff;
+            --black: #333333;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            background-color: var(--pink-light);
+            color: var(--black);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .hello-kitty-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: url('bgcindy.jpg');
+            background-size: auto;
+            background-repeat: repeat;
+        }
+        
+        .header {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 3em;
+            /* REVISI: Warna teks diubah jadi gelap */
+            color: var(--black); 
+            /* REVISI: Bayangan diubah agar cocok dengan teks gelap */
+            text-shadow: 2px 2px var(--pink-medium); 
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 900px;
+            position: relative;
+            z-index: 5;
+            border: 5px solid var(--pink-medium);
+            margin-bottom: 20px;
+        }
+        .cat-image {
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background-image: url('meong.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 10;
+            /* REVISI: Tambahkan animasi naik-turun */
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* REVISI: Keyframes untuk animasi kucing */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px); /* Bergerak ke atas 20px */
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .order-list { list-style: none; padding: 0; }
+        .order-item {
+            background-color: var(--pink-light);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid var(--pink-medium);
+        }
+        .order-item h4 {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            color: var(--red-heart);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+        .order-item p { margin: 5px 0; font-size: 1.1em; }
+        .order-item strong { color: var(--pink-dark); }
+        .order-details ul { list-style: none; padding-left: 15px; }
+        .order-details li { margin-bottom: 5px; font-size: 1.1em; }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .clear-orders-btn, .back-to-menu-link {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--white);
+            background-color: var(--red-heart);
+        }
+        .back-to-menu-link { background-color: var(--pink-dark); }
+
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--pink-medium);
+            margin-bottom: 10px;
+        }
+        .stock-item label {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--pink-dark);
+        }
+        .stock-item input[type="number"] {
+            width: 60px;
+            font-size: 1.2em;
+            padding: 5px;
+            border: 1px solid var(--pink-medium);
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .save-stock-btn {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--white);
+            background-color: var(--red-heart);
+            display: block;
+            width: fit-content;
+            margin: 20px auto 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hello-kitty-bg"></div>
+
+    <h1 class="header" id="main-header">💖 Cindy's Orders! 💖</h1>
+    <div class="container" id="main-container">
+        <div class="cat-image"></div>
+        <ul id="ordersList" class="order-list"></ul>
+        <p id="noOrdersMessage" style="text-align: center; font-style: italic; color: var(--pink-dark); font-size: 1.2em;">No orders yet!</p>
+        
+        <div class="button-group">
+            <a href="checkout.html" class="back-to-menu-link">Back to Menu</a>
+            <button class="clear-orders-btn" onclick="clearOrders()">Clear All Orders</button>
+        </div>
+    </div>
+
+    <h1 class="header" id="stock-header">💖 Manage Menu Stock 💖</h1>
+    <div class="container" id="stock-container">
+        <div id="stock-management-list">
+            </div>
+        <button class="save-stock-btn" onclick="saveStock()">Save Stock Changes</button>
+    </div>
+
+
+    <script>
+        function loadOrders() {
+            const ordersList = document.getElementById('ordersList');
+            const noOrdersMessage = document.getElementById('noOrdersMessage');
+            let orders = JSON.parse(localStorage.getItem('cindy_orders')) || [];
+
+            ordersList.innerHTML = '';
+            if (orders.length === 0) {
+                noOrdersMessage.style.display = 'block';
+            } else {
+                noOrdersMessage.style.display = 'none';
+                orders.forEach((order, index) => {
+                    let itemsHtml = '';
+                    order.items.forEach(item => {
+                        let itemName = item.id.replace(/_/g, ' ');
+                        let itemTotal = item.price * item.quantity;
+                        itemsHtml += `<li>- ${itemName} (${item.quantity}x) - Rp ${itemTotal.toLocaleString('id-ID')}</li>`;
+                    });
+
+                    let toppingsHtml = '';
+                    if (order.toppings && order.toppings.length > 0) {
+                        toppingsHtml = `<p><strong>Toppings:</strong></p><ul>`;
+                        order.toppings.forEach(topping => {
+                            let toppingName = topping.id.replace(/_/g, ' ');
+                            toppingsHtml += `<li>- ${toppingName} - Rp ${topping.price.toLocaleString('id-ID')}</li>`;
+                        });
+                        toppingsHtml += `</ul>`;
+                    }
+
+                    let total = order.totalPrice || 0; 
+
+                    let orderHtml = `
+                        <li class="order-item">
+                            <h4>Order #${index + 1} <span style="font-size: 0.8em; float: right; color: #888;">${order.timestamp}</span></h4>
+                            <div class="order-details">
+                                <p><strong>Nama Pembeli:</strong> ${order.buyerName || 'N/A'}</p>
+                                <p><strong>Texture:</strong> ${order.texture === 'creamy_cheese' ? 'Creamy Cheese' : 'Regular Cheese'}</p>
+                                <p><strong>Items:</strong></p>
+                                <ul>${itemsHtml}</ul>
+                                ${toppingsHtml}
+                                <p style="border-top: 2px dashed var(--pink-medium); padding-top: 10px; margin-top: 10px;">
+                                    <strong>Total: Rp ${total.toLocaleString('id-ID')}</strong>
+                                </p>
+                            </div>
+                        </li>
+                    `;
+                    ordersList.innerHTML += orderHtml;
+                });
+            }
+        }
+
+        function clearOrders() {
+            if (confirm("Are you sure you want to clear all orders?")) {
+                localStorage.removeItem('cindy_orders');
+                loadOrders();
+            }
+        }
+
+        function getStock() {
+            return JSON.parse(localStorage.getItem('cindy_menu_stock')) || {
+                "garlic_bread": 10,
+                "fusili_500": 10,
+                "fusili_300": 10
+            };
+        }
+
+        function loadStockManagement() {
+            const menuStock = getStock();
+            const stockListDiv = document.getElementById('stock-management-list');
+            stockListDiv.innerHTML = '';
+
+            const items = [
+                { id: 'garlic_bread', name: 'Garlic Bread' },
+                { id: 'fusili_500', name: 'Fusili 500ml' },
+                { id: 'fusili_300', name: 'Fusili 300ml' }
+            ];
+
+            items.forEach(item => {
+                const currentStock = menuStock[item.id] || 0;
+                stockListDiv.innerHTML += `
+                    <div class="stock-item">
+                        <label for="stock-input-${item.id}">${item.name}:</label>
+                        <input type="number" id="stock-input-${item.id}" value="${currentStock}" min="0">
+                    </div>
+                `;
+            });
+        }
+
+        function saveStock() {
+            let menuStock = {
+                garlic_bread: parseInt(document.getElementById('stock-input-garlic_bread').value) || 0,
+                fusili_500: parseInt(document.getElementById('stock-input-fusili_500').value) || 0,
+                fusili_300: parseInt(document.getElementById('stock-input-fusili_300').value) || 0
+            };
+            
+            localStorage.setItem('cindy_menu_stock', JSON.stringify(menuStock));
+            alert('Stok berhasil disimpan!');
+        }
+
+        window.onload = () => {
+            loadOrders();
+            loadStockManagement();
+        };
+    </script>
+</body>
+</html>
